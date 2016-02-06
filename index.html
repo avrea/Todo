@@ -15,24 +15,23 @@
 
 </head>
 <body ng-app="myApp" ng-controller="todoCtrl">
-<h1> </h1>
-<BR><BR>
-  <div class="item item-input-inset">
-    <label class="item-input-wrapper"><input type="text" placeholder="Write..." ng-model="todoInput" size="100"></label>
+<main>
+		<CENTER><IMG SRC="img/university.png" style="width:100px;padding-top:30px;"></CENTER>
 
-    <button class="button button-small" ng-click="todoAdd()">Add</button>
-  </div>
-<div ng-repeat="x in todoList">
+		<div class="item item-input-inset">
+		<label class="item-input-wrapper"><input type="text" placeholder="Write..." ng-model="todoInput" size="100"></label>
+		<button class="button button-small add" ng-click="todoAdd()"></button>
+		</div>
 
-    <li class="item item-checkbox">
-     <label class="checkbox"><input type="checkbox" ng-model="x.done" ng-click="update()"></label>
-    <div class="lines"></div>
-  
-     <span id="list">{{x.todoText}} </span>
-  </li>
-</div>
-
-<!-- the remove button will call the remove function and remoave all items that are marked done -->
-<button class="button button-block buttonRaw" ng-click="remove()">Delete the checked items</button>
+		<div ng-repeat="x in todoList">
+		<li class="item item-checkbox notes">
+		<label class="checkbox"><input type="checkbox" ng-model="x.done" ng-click="update()"></label>
+		<span id="list">{{x.todoText}} </span>
+		</li>
+		</div>
+</main>
+<footer>
+<button class="button button-block" ng-click="remove()"> Delete the checked items</button>
+</footer>
 </body>
 </html>
