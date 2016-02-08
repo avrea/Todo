@@ -1,14 +1,14 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget 
-id="com.avrea.ulol" 
+id="com.avrea.cutepad" 
 version="1" 
 xmlns="http://www.w3.org/ns/widgets"
 xmlns:gap="http://phonegap.com/ns/1.0"
 >
-    <name>Todo</name>
+    <name>Cutepad</name>
     
-    <description>Test your sharp thinking skill with this hilarious app.</description>
-    <author email="buryavrea@gmail.com" href="http://composhare.com">Howard Monares</author>
+    <description>Simple notepad for girls.</description>
+    <author email="howardmonares@gmail.com" href="http://composhare.com">Howard Monares</author>
     <content src="index.html" />
     <access origin="*" />
 

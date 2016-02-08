@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7" />
+<title>Cutepad</title>
+    
+	<link rel="stylesheet" href="css/ionic.min.css" />
+ 	<script src="js/ionic.bundle.min.js"></script>
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+	<script type='application/javascript' src='js/fastclick.js'></script>
+	<style type="text/css">div#fullpage {display:none;}</style>
+
+</head>
+
+<body onload="onLoad()" onresize="onResize()" ng-app="myApp" ng-controller="todoCtrl">
+<script>
+    function onLoad() {
+        if(( /(ipad|iphone|ipod|android|windows phone)/i.test(navigator.userAgent) )) {
+            document.addEventListener('deviceready', initApp, false);
+        } else {
+            initApp();
+        }
+    }
+
+    var admobid = {};
+    if( /(android)/i.test(navigator.userAgent) ) {
+		admobid = {
+			banner: 'ca-app-pub-5557706460832127/7453309895',
+			interstitial: 'ca-app-pub-5557706460832127/1406776295'
+		};
+    } else if(/(ipod|iphone|ipad)/i.test(navigator.userAgent)) {
+		admobid = {
+			banner: 'ca-app-pub-5557706460832127/4049615493',
+			interstitial: 'ca-app-pub-5557706460832127/6535626695'
+		};
+    } else {
+		admobid = {
+			banner: 'ca-app-pub-5557706460832127/6863481093',
+			interstitial: 'ca-app-pub-5557706460832127/5058893493'
+		};
+    }
+        
+    function initApp() {
+	if (! AdMob ) { alert( 'admob plugin not ready' ); return; }
+	initAd();
+        // display a banner at startup
+        createSelectedBanner();
+    }
+    function initAd(){
+        var defaultOptions = {
+            // bannerId: admobid.banner,
+            // interstitialId: admobid.interstitial,
+            // adSize: 'SMART_BANNER',
+            // width: integer, // valid when set adSize 'CUSTOM'
+            // height: integer, // valid when set adSize 'CUSTOM'
+            position: AdMob.AD_POSITION.BOTTOM_CENTER,
+            // offsetTopBar: false, // avoid overlapped by status bar, for iOS7+
+            bgColor: 'black', // color name, or '#RRGGBB'
+            // x: integer,		// valid when set position to 0 / POS_XY
+            // y: integer,		// valid when set position to 0 / POS_XY
+            isTesting: true, // set to true, to receiving test ad for testing purpose
+            // autoShow: true // auto show interstitial ad when loaded, set to false if prepare/show
+        };
+        AdMob.setOptions( defaultOptions );
+        registerAdEvents();
+    }
+    // optional, in case respond to events or handle error
+    function registerAdEvents() {
+        // new events, with variable to differentiate: adNetwork, adType, adEvent
+        document.addEventListener('onAdFailLoad', function(data){});
+        document.addEventListener('onAdLoaded', function(data){});
+        document.addEventListener('onAdPresent', function(data){});
+        document.addEventListener('onAdLeaveApp', function(data){});
+        document.addEventListener('onAdDismiss', function(data){});
+    }
+    
+    // click button to call following functions
+    function getSelectedAdSize() {
+        var i = document.getElementById("adSize").selectedIndex;
+        var items = document.getElementById("adSize").options;
+        return items[i].value;
+    }
+    function getSelectedPosition() {
+        var i = document.getElementById("adPosition").selectedIndex;
+        var items = document.getElementById("adPosition").options;
+        return parseInt( items[i].value );
+    }
+    function createSelectedBanner() {
+    	var overlap = document.getElementById('overlap').checked;
+        var offsetTopBar = document.getElementById('offsetTopBar').checked;
+        AdMob.createBanner( {adId:admobid.banner, overlap:overlap, offsetTopBar:offsetTopBar, adSize: getSelectedAdSize(), position:getSelectedPosition()} );
+    }
+    function createBannerOfGivenSize() {
+        var w = document.getElementById('w').value;
+        var h = document.getElementById('h').value;
+        
+        AdMob.createBanner( {adId:admobid.banner,
+                           adSize:'CUSTOM', width:w, height:h,
+                           position:getSelectedPosition()} );
+    }
+    function showBannerAtSelectedPosition() {
+        AdMob.showBanner( getSelectedPosition() );
+    }
+    function showBannerAtGivenXY() {
+        var x = document.getElementById('x').value;
+        var y = document.getElementById('y').value;
+        AdMob.showBannerAtXY(x, y);
+    }
+    function prepareInterstitial() {
+        var autoshow = document.getElementById('autoshow').checked;
+        AdMob.prepareInterstitial({adId:admobid.interstitial, autoShow:autoshow});
+    }
+    function onResize(){
+        var s = document.getElementById('sizeinfo');
+        s.innerHTML = "web view: " + window.innerWidth + " x " + window.innerHeight;
+    }
+</script>
+	<div id="fullpage">
+		<p>Demo for AdMob Plugin</p>
+		Banner<br /> Standard: <select id="adSize">
+			<option value='SMART_BANNER'>SMART_BANNER</option>
+			<option value='BANNER'>BANNER</option>
+			<option value='MEDIUM_RECTANGLE'>MEDIUM_RECTANGLE</option>
+			<option value='FULL_BANNER'>FULL_BANNER</option>
+			<option value='LEADERBOARD'>LEADERBOARD</option>
+			<option value='SKYSCRAPER'>SKYSCRAPER</option>
+		</select><br /> <input type='checkbox' id='overlap' />overlap<br/>
+         <input type='checkbox' id='offsetTopBar' />offsetTopBar<br/>
+		<button onclick="createSelectedBanner();">create</button>
+		<br /> Custom Size: (<input id='w' type='text' size=3 /> x <input
+			id='h' type='text' size=3>)
+		<button onclick="createBannerOfGivenSize();">create</button>
+		<br />
+
+		<button onclick="AdMob.removeBanner();">remove banner</button>
+
+		<hr />
+		<select id="adPosition">
+			<option value='1'>Top Left</option>
+			<option value='2'>Top Center</option>
+			<option value='3'>Top Right</option>
+			<option value='4'>Left</option>
+			<option value='5'>Center</option>
+			<option value='6'>Right</option>
+			<option value='7'>Bottom Left</option>
+			<option value='8' selected>Bottom Center</option>
+			<option value='9'>Bottom Right</option>
+		</select>
+		<button onclick="showBannerAtSelectedPosition();">show</button>
+		<br /> (<input id='x' type='text' size=3 />,<input id='y'
+			type='text' size=3>)
+		<button onclick="showBannerAtGivenXY();">show At XY</button>
+		<br />
+
+		<button onclick="AdMob.hideBanner();">hide banner</button>
+		<hr />
+
+		<p>Interstitial</p>
+		<input type='checkbox' id='autoshow' checked />auto show when ready<br />
+		<button onclick="prepareInterstitial();">Prepare</button>
+		<button onclick="AdMob.showInterstitial();">Show</button>
+		<div id='sizeinfo'></div>
+	</div>
+
+		<CENTER><H1>Cutepad</H1></CENTER>
+
+		<div class="item item-input-inset">
+		<label class="item-input-wrapper"><input type="text" placeholder="Write to do..." ng-model="todoInput" size="100"></label>
+		<button class="button button-small add" ng-click="todoAdd()"></button>
+		</div>
+
+
+		<div ng-repeat="x in todoList">
+		<li class="item item-checkbox notes">
+		<label class="checkbox"><input type="checkbox" ng-model="x.done" ng-click="update()"></label>
+		<span id="list">{{x.todoText}} </span>
+		</li>
+		</div>
+
+
+
+
+		<div class="bar bar-footer bar-calm">
+		<button class="button button-clear" ng-click="remove()">&#10003; Delete checked items</button>
+		<button class="button button-clear">&#10084; Show your love</button>
+		</div>
+
+<script type="text/javascript">window.addEventListener("load",function(){new FastClick(document.body)},!1);</script>
+</body>
+</html>
